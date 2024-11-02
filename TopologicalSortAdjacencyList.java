@@ -139,18 +139,38 @@ public class TopologicalSortAdjacencyList {
         graph.get(0).add(new Edge(0, 4, 1));
          */
 
+        /*
         final int N = 4;
         Map<Integer, List<Edge>> graph = new HashMap<>();
         for (int i = 0; i < N; i++) graph.put(i, new ArrayList<>());
         graph.get(1).add(new Edge(1, 2, 0));
         graph.get(2).add(new Edge(2, 3, 0));
         graph.get(3).add(new Edge(3, 1, 1));
+         */
+
+        Scanner scanner = new Scanner(System.in);
+        int T = scanner.nextInt();
+        int O = scanner.nextInt();
+
+        //System.out.println(T);//pocet vlaku aka nodes
+        //System.out.println(O);//pocet omezeni
+        final int N = T+1;
+        Map<Integer, List<Edge>> graph = new HashMap<>();
+        for (int i = 0; i < T+1; i++) graph.put(i, new ArrayList<>());
+        for (int k = 0; k < O; k++) {
+            int A = scanner.nextInt();
+            int B = scanner.nextInt();
+            int m = scanner.nextInt();
+            graph.get(B).add(new Edge(B, A, m));
+
+            // Output the values of A, B, and m (for testing purposes)
+            //System.out.println("A: " + A + ", B: " + B + ", m: " + m);
+        }
 
         if (hasCycle(graph, N)) {
             System.out.print("nelze");
             exit(1);
         }
-
 
         int[] ordering = topologicalSort(graph, N);
 
@@ -175,11 +195,15 @@ public class TopologicalSortAdjacencyList {
         }
 
         // Prints: [6, 0, 5, 1, 2, 3, 4]
-        System.out.println("ordering");
-        System.out.println(Arrays.toString(ordering));
+       // System.out.println("ordering");
+       // System.out.println(Arrays.toString(ordering));
 
-        System.out.println("departure time");
-        System.out.println(Arrays.toString(departureTime));
+        //System.out.println("departure time");
+        //System.out.println(Arrays.toString(departureTime));
+        for (int p = 1; p < departureTime.length; p++) {
+            System.out.print(departureTime[p] + " ");
+        }
+
     }
 
     private static int max(int i, int i1) {

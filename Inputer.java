@@ -1,6 +1,7 @@
 import java.util.*;
 
 public class Inputer {
+
     public static void main(String[] args) {
 
 
@@ -33,5 +34,7 @@ public class Inputer {
             weight = w;
         }
     }
+
+
 
 }
