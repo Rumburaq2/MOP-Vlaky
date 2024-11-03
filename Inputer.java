@@ -18,7 +18,16 @@ public class Inputer {
             int A = scanner.nextInt();
             int B = scanner.nextInt();
             int m = scanner.nextInt();
-            graph.get(B).add(new Edge(B, A, m));
+            if( m >= 0){
+                graph.get(B).add(new Edge(B, A, m));
+            }
+            else {
+                graph.get(B).add(new Edge(B, A, -m));
+                graph.get(A).add(new Edge(A, B, m));
+            }
+
+
+            //graph.get(B).add(new Edge(B, A, m));
 
             // Output the values of A, B, and m (for testing purposes)
             System.out.println("A: " + A + ", B: " + B + ", m: " + m);

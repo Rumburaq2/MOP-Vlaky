@@ -161,19 +161,33 @@ public class TopologicalSortAdjacencyList {
             int A = scanner.nextInt();
             int B = scanner.nextInt();
             int m = scanner.nextInt();
-            graph.get(B).add(new Edge(B, A, m));
+            //graph.get(B).add(new Edge(B, A, m));
+            if( m >= 0){
+                graph.get(B).add(new Edge(B, A, m));
+            }
+            else {
+                graph.get(B).add(new Edge(B, A, -m));
+                //graph.get(A).add(new Edge(A, B, m));
+            }
+
 
             // Output the values of A, B, and m (for testing purposes)
             //System.out.println("A: " + A + ", B: " + B + ", m: " + m);
         }
 
+        Integer[] Dept_times = trainDepartureTimes(graph, N);
+        System.out.println(Arrays.toString(Dept_times));
+
+        /*
         if (hasCycle(graph, N)) {
             System.out.print("nelze");
             exit(1);
         }
+         */
 
-        int[] ordering = topologicalSort(graph, N);
+        //int[] ordering = topologicalSort(graph, N);
 
+        /*
         //nastavime departureTime u vsech nodes na 0
         int[] departureTime = new int[ordering.length];
         for (int j = 0; j < ordering.length; j++){
@@ -190,9 +204,8 @@ public class TopologicalSortAdjacencyList {
                         departureTime[edge.to] = max(departureTime[edge.to], (departureTime[edge.from] + edge.weight));
                     }
                 }
-
-
         }
+         */
 
         // Prints: [6, 0, 5, 1, 2, 3, 4]
        // System.out.println("ordering");
@@ -200,9 +213,11 @@ public class TopologicalSortAdjacencyList {
 
         //System.out.println("departure time");
         //System.out.println(Arrays.toString(departureTime));
+        /*
         for (int p = 1; p < departureTime.length; p++) {
             System.out.print(departureTime[p] + " ");
         }
+         */
 
     }
 
@@ -211,6 +226,47 @@ public class TopologicalSortAdjacencyList {
         if (i1 > i) return i1;
         return i1;
     }
+
+    public static Integer[] trainDepartureTimes(Map<Integer, List<Edge>> graph, int numNodes) {
+        Integer[] departure_time = new Integer[numNodes];
+        Arrays.fill(departure_time, Integer.MIN_VALUE);
+        departure_time[1] = 0; // Assume node 0 as the starting point
+
+        // Perform Bellman-Ford relaxation for `numNodes - 1` times
+        for (int i = 1; i < numNodes; i++) {
+            for (int u = 0; u < numNodes; u++) {
+                if (departure_time[u] != Integer.MIN_VALUE) {
+                    List<Edge> adjacentEdges = graph.get(u);
+                    if (adjacentEdges != null) {
+                        for (Edge edge : adjacentEdges) {
+                            int v = edge.to;
+                            int weight = edge.weight;
+                            departure_time[v] = Math.max(departure_time[v], departure_time[u] + weight);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Check for negative cycles by relaxing once more
+        for (int u = 0; u < numNodes; u++) {
+            if (departure_time[u] != Integer.MIN_VALUE) {
+                List<Edge> adjacentEdges = graph.get(u);
+                if (adjacentEdges != null) {
+                    for (Edge edge : adjacentEdges) {
+                        int v = edge.to;
+                        int weight = edge.weight;
+                        if (departure_time[u] + weight > departure_time[v]) {
+                            throw new IllegalArgumentException("Negative cycle detected, no feasible solution exists");
+                        }
+                    }
+                }
+            }
+        }
+
+        return departure_time;
+    }
+
 
 
     public static boolean hasCycle(Map<Integer, List<Edge>> graph, int numNodes) {
